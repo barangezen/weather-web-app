@@ -23,7 +23,6 @@ export function aggregateWeatherData(
 
   for (const date in groupedData) {
     const data = groupedData[date];
-    console.log("data", data);
     const totalTemp = data.reduce((sum, item) => sum + item.temperature, 0);
     const lowestTemps = data.map((item) => item.lowestTemperature);
     const lowestTemperature = Math.min(...lowestTemps);
