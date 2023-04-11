@@ -24,6 +24,10 @@ export async function getWeatherData(city: string): Promise<WeatherData[]> {
         description: item.weather[0].description,
         icon: `https://openweathermap.org/img/w/${item.weather[0].icon}.png`,
         city: forecastData.city.name,
+        humidity: item.main.humidity,
+        feelsLike: item.main.feels_like,
+        visibility: item.visibility,
+        windSpeed: item.wind.speed,
       };
     }
   );

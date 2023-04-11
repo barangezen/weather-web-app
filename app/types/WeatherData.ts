@@ -5,6 +5,10 @@ export interface WeatherData {
   icon: string;
   city: string;
   lowestTemperature: number;
+  humidity: number;
+  feelsLike: number;
+  windSpeed: number;
+  visibility: number;
 }
 
 export interface WeatherResponse {
