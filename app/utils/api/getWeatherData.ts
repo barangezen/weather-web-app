@@ -21,12 +21,13 @@ export async function getWeatherData(city: string): Promise<WeatherData[]> {
         date: item.dt_txt,
         temperature: Math.round(item.main.temp - 273.15),
         lowestTemperature: Math.round(item.main.temp_min),
+        highestTemperature: Math.round(item.main.temp_max),
         description: item.weather[0].description,
         icon: `https://openweathermap.org/img/w/${item.weather[0].icon}.png`,
         city: forecastData.city.name,
         humidity: item.main.humidity,
-        feelsLike: item.main.feels_like,
-        visibility: item.visibility,
+        feelsLike: Math.round(item.main.feels_like),
+        visibility: item.visibility / 1000,
         windSpeed: item.wind.speed,
       };
     }

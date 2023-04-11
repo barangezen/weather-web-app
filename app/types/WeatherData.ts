@@ -5,6 +5,7 @@ export interface WeatherData {
   icon: string;
   city: string;
   lowestTemperature: number;
+  highestTemperature: number;
   humidity: number;
   feelsLike: number;
   windSpeed: number;
