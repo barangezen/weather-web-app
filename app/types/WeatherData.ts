@@ -4,6 +4,7 @@ export interface WeatherData {
   description: string;
   icon: string;
   city: string;
+  lowestTemperature: number;
 }
 
 export interface WeatherResponse {

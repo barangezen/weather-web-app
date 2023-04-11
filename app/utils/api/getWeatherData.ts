@@ -20,6 +20,7 @@ export async function getWeatherData(city: string): Promise<WeatherData[]> {
       return {
         date: item.dt_txt,
         temperature: Math.round(item.main.temp - 273.15),
+        lowestTemperature: Math.round(item.main.temp_min),
         description: item.weather[0].description,
         icon: `https://openweathermap.org/img/w/${item.weather[0].icon}.png`,
         city: forecastData.city.name,
