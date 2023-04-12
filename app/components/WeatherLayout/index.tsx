@@ -1,6 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { WeatherData, WeatherDataAPI } from "~/types/WeatherData";
 import { aggregateWeatherData } from "~/utils/helpers/aggregateWeatherData";
@@ -13,6 +11,8 @@ import { ForecastList } from "../ForecastList";
 export const WeatherLayout = () => {
   const { config } = useLoaderData();
   const [location, setLocation] = useState<{ lat: number; lon: number }>();
+  const [city, setCity] = useState("");
+  const navigate = useNavigate();
   const [weatherData, setWeatherData] = useState<WeatherData[]>();
   const currentTime = getCurrentTimeFormatted();
 
@@ -66,6 +66,11 @@ export const WeatherLayout = () => {
     ],
   };
 
+  const handleSearch = () => {
+    // Redirect to the desired page with the city as a parameter
+    navigate(`/${city}`);
+  };
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -116,6 +121,29 @@ export const WeatherLayout = () => {
       {weatherData ? (
         <>
           <div className="flex flex-col">
+            <div className="relative w-96 self-center mb-12">
+              <input
+                className="w-full h-12 pl-6 pr-12 rounded-full border"
+                placeholder="Search City"
+                onChange={(e) => setCity(e.target.value)}
+              />
+              <svg
+                onClick={handleSearch}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="absolute cursor-pointer w-6 h-6 text-gray-400 right-3 top-3"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                />
+              </svg>
+            </div>
+
             <span className="text-xs font-semibold text-orange-500">
               {currentTime}
             </span>
