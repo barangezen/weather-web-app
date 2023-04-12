@@ -1,4 +1,4 @@
-function getCurrentTimeFormatted(): string {
+export function getCurrentTimeFormatted(): string {
   const currentDate = new Date();
 
   const monthAbbreviations = [

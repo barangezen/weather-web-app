@@ -2,32 +2,14 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import type { V2_MetaFunction } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 
 import { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
 import { LineChart } from "~/components/LineChart";
+import { WeatherInfoDetail } from "~/components/WeatherInfoDetail";
 import type { WeatherData, WeatherDataAPI } from "~/types/WeatherData";
 import { aggregateWeatherData } from "~/utils/helpers/aggregateWeatherData";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { formatDate } from "~/utils/helpers/dateFormatter";
+import { getCurrentTimeFormatted } from "~/utils/helpers/getCurrentTimeFormatted";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "New Remix App" }];
@@ -45,6 +27,8 @@ export default function Index() {
   const { config } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const [location, setLocation] = useState<{ lat: number; lon: number }>();
   const [weatherData, setWeatherData] = useState<WeatherData[]>();
+  const currentTime = getCurrentTimeFormatted();
+  const date = formatDate("2023-04-12");
 
   const temperatureData = weatherData
     ? [...weatherData.map((item) => item.temperature), 0]
@@ -68,7 +52,7 @@ export default function Index() {
         position: "top" as const,
       },
       title: {
-        display: true,
+        display: false,
         text: "Hourly forecast ",
       },
     },
@@ -78,7 +62,7 @@ export default function Index() {
     labels,
     datasets: [
       {
-        label: "Average Tempature",
+        label: "Tempature",
         data: temperatureData,
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
@@ -143,11 +127,39 @@ export default function Index() {
     fetchWeatherData();
   }, [location, config]);
   return (
-    <div className="container mx-auto">
-      hello world!
-      <div className="w-1/2">
-        <LineChart data={data} options={options} />
-      </div>
-    </div>
+    <>
+      {weatherData ? (
+        <div className="container mx-auto">
+          hello world!
+          <div>
+            <div className="flex flex-col">
+              <span className="text-xs font-semibold text-orange-500">
+                {currentTime}
+              </span>
+
+              <span className="text-xl font-bold">
+                {`${weatherData[0].city}, ${weatherData[0].country}`}
+              </span>
+            </div>
+            <div className="mb-6">
+              <WeatherInfoDetail
+                icon={weatherData[0].icon}
+                tempature={weatherData[0].temperature}
+                description={weatherData[0].description}
+                windSpeed={weatherData[0].windSpeed}
+                humidity={weatherData[0].humidity}
+                lowestTemperature={weatherData[0].lowestTemperature}
+                highestTemperature={weatherData[0].highestTemperature}
+              />
+            </div>
+            <div className="w-1/2">
+              <LineChart title="Daily forecast" data={data} options={options} />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div>Hello World!</div>
+      )}
+    </>
   );
 }

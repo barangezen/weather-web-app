@@ -22,10 +22,16 @@ ChartJS.register(
 );
 
 interface ILineChart {
+  title?: string;
   data: ChartData<"line", (number | Point | null)[], unknown>;
   options: ChartOptions;
 }
 
-export const LineChart: React.FC<ILineChart> = ({ data, options }) => {
-  return <Line data={data} options={options} />;
+export const LineChart: React.FC<ILineChart> = ({ title, data, options }) => {
+  return (
+    <>
+      <span className="text-lg font-bold">{title}</span>
+      <Line data={data} options={options} />
+    </>
+  );
 };

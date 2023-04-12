@@ -1,4 +1,5 @@
 import type { WeatherData } from "~/types/WeatherData";
+import { findClosestWeather } from "./closestWeather";
 
 export function aggregateWeatherData(
   weatherData: WeatherData[]
@@ -23,16 +24,16 @@ export function aggregateWeatherData(
 
   for (const date in groupedData) {
     const data = groupedData[date];
-    const totalTemp = data.reduce((sum, item) => sum + item.temperature, 0);
+    const freshestData = findClosestWeather(data);
+    const currentTempature = freshestData?.temperature;
     const lowestTemps = data.map((item) => item.lowestTemperature);
     const lowestTemperature = Math.min(...lowestTemps);
     const highestTemps = data.map((item) => item.highestTemperature);
     const highestTemperature = Math.max(...highestTemps);
-    const avgTemp = Math.round(totalTemp / data.length);
 
     aggregatedData.push({
       date,
-      temperature: avgTemp,
+      temperature: currentTempature || 0,
       description: data[0].description,
       icon: data[0].icon,
       city: data[0].city,
