@@ -2,11 +2,11 @@ import { useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import type { WeatherData } from "~/types/WeatherData";
 import { formatDate } from "~/utils/helpers/dateFormatter";
-import { getCurrentTimeFormatted } from "~/utils/helpers/getCurrentTimeFormatted";
 import { WeatherInfoDetail } from "../WeatherInfoDetail";
 import { LineChart } from "../LineChart";
 import { ForecastList } from "../ForecastList";
 import type { ChartOptions } from "chart.js";
+import { getCurrentTimeFormatted } from "~/utils/helpers/getCurrentTimeFOrmatted";
 
 interface IWeatherLayout {
   weatherData: WeatherData[];
