@@ -42,6 +42,7 @@ export function aggregateWeatherData(
       humidity: data[0].humidity,
       visibility: data[0].visibility / 1000,
       windSpeed: data[0].windSpeed,
+      country: data[0].country,
     });
   }
 

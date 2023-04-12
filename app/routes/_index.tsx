@@ -1,7 +1,33 @@
-import { LoaderFunction, json } from "@remix-run/node";
-import { V2_MetaFunction, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
 import { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import { LineChart } from "~/components/LineChart";
 import type { WeatherData, WeatherDataAPI } from "~/types/WeatherData";
+import { aggregateWeatherData } from "~/utils/helpers/aggregateWeatherData";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "New Remix App" }];
@@ -19,6 +45,58 @@ export default function Index() {
   const { config } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const [location, setLocation] = useState<{ lat: number; lon: number }>();
   const [weatherData, setWeatherData] = useState<WeatherData[]>();
+
+  const temperatureData = weatherData
+    ? [...weatherData.map((item) => item.temperature), 0]
+    : [0];
+  const lowestTemperatureData = weatherData
+    ? [...weatherData.map((item) => item.lowestTemperature), 0]
+    : [0];
+
+  const highestTemperatureData = weatherData
+    ? [...weatherData.map((item) => item.highestTemperature), 0]
+    : [0];
+
+  const labels = weatherData?.map((item) => item.date);
+
+  console.log("weather data", weatherData);
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Hourly forecast ",
+      },
+    },
+  };
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Average Tempature",
+        data: temperatureData,
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+      {
+        label: "Lowest Tempature",
+        data: lowestTemperatureData,
+        borderColor: "rgb(100, 65, 80)",
+        backgroundColor: "rgba(149, 35, 132, 0.5)",
+      },
+      {
+        label: "Highest Tempature",
+        data: highestTemperatureData,
+        borderColor: "rgb(50, 175, 48)",
+        backgroundColor: "rgba(149, 35, 132, 0.5)",
+      },
+    ],
+  };
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -48,13 +126,28 @@ export default function Index() {
               description: item.weather[0].description,
               icon: `https://openweathermap.org/img/w/${item.weather[0].icon}.png`,
               city: data.city.name,
+              lowestTemperature: item.main.temp_min,
+              highestTemperature: item.main.temp_max,
+              humidity: item.main.humidity,
+              feelsLike: item.main.feels_like,
+              visibility: item.visibility,
+              windSpeed: item.wind.speed,
+              country: data.city.country,
             };
           }
         );
-        setWeatherData(weatherData);
+        const aggregatedData = aggregateWeatherData(weatherData);
+        setWeatherData(aggregatedData);
       }
     }
     fetchWeatherData();
   }, [location, config]);
-  return <div>Hello world</div>;
+  return (
+    <div className="container mx-auto">
+      hello world!
+      <div className="w-1/2">
+        <LineChart data={data} options={options} />
+      </div>
+    </div>
+  );
 }

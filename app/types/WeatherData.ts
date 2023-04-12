@@ -4,6 +4,7 @@ export interface WeatherData {
   description: string;
   icon: string;
   city: string;
+  country: string;
   lowestTemperature: number;
   highestTemperature: number;
   humidity: number;

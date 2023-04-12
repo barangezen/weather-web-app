@@ -29,6 +29,7 @@ export async function getWeatherData(city: string): Promise<WeatherData[]> {
         feelsLike: Math.round(item.main.feels_like),
         visibility: item.visibility / 1000,
         windSpeed: item.wind.speed,
+        country: forecastData.city.country,
       };
     }
   );
