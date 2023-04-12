@@ -1,53 +1,45 @@
-# Welcome to Remix!
+# Weather Forecast App
 
-- [Remix Docs](https://remix.run/docs)
+This is a weather forecast app built using Remix framework, TypeScript, Tailwind, and OpenWeather API. It allows users to search for weather forecast of a particular location and view the current weather conditions as well as the forecast for the next few days.
 
-## Development
+## Features
 
-From your terminal:
+- Search for weather forecast by location
+- View current weather conditions including temperature, weather description, humidity, and wind speed
+- View forecast for the next 5 days, including temperature and weather description
+- User-friendly UI with responsive design using Tailwind CSS
 
-```sh
-npm run dev
-```
+## Technologies Used
 
-This starts your app in development mode, rebuilding assets on file changes.
+- [Remix](https://remix.run/docs) - A modern web framework for building fast, optimized, and server-rendered React applications
+- TypeScript - A statically typed superset of JavaScript that compiles to plain JavaScript
+- Tailwind CSS - A highly customizable CSS framework for building modern user interfaces
+- OpenWeather API - A free weather API that provides current weather data and forecasts for various locations worldwide
 
-## Deployment
+## Screenshots
 
-First, build your app for production:
+![Screenshot 1](https://github.com/barangezen/weather-web-app/blob/main/app/screen-shots/weather-app1.png)
+![Screenshot 2](https://github.com/barangezen/weather-web-app/blob/main/app/screen-shots/weather-app2.png)
 
-```sh
-npm run build
-```
+## Getting Started
 
-Then run the app in production mode:
+To get started with the weather forecast app, follow these steps:
 
-```sh
-npm start
-```
+1. Clone the repository: `git clone https://github.com/your-username/weather-forecast-app.git`
+2. Install dependencies: `npm install` or `yarn install`
+3. Create an account on OpenWeatherMap and obtain an API key
+4. Create a `.env` file in the root directory of the project and add the following environment variable with your OpenWeatherMap API key: API_KEY=yourkey
+5. Start the development server: `npm run dev` or `yarn dev`
+6. Open the app in your browser at http://localhost:3000
 
-Now you'll need to pick a host to deploy it to.
+## Usage
 
-### DIY
+- Enter a location in the search bar and press Enter or click on the search button
+- View the current weather conditions and forecast for the next 5 days
+- To change the location, enter a new location in the search bar and press Enter or click on the search button again
 
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
+## Acknowledgements
 
-Make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
-
-### Using a Template
-
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
-
-```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
-```
+- [Remix Documentation](https://remix.run/docs)
+- [OpenWeatherMap API Documentation](https://openweathermap.org/api)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
