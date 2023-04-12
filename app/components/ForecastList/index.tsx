@@ -1,4 +1,4 @@
-import { WeatherData } from "~/types/WeatherData";
+import type { WeatherData } from "~/types/WeatherData";
 import { formatDate } from "~/utils/helpers/dateFormatter";
 
 interface IForecastList {

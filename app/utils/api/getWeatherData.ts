@@ -3,6 +3,7 @@ import type {
   WeatherDataAPI,
   WeatherResponse,
 } from "~/types/WeatherData";
+import { aggregateWeatherData } from "../helpers/aggregateWeatherData";
 
 const apiKey = process.env.API_KEY;
 
@@ -20,8 +21,8 @@ export async function getWeatherData(city: string): Promise<WeatherData[]> {
       return {
         date: item.dt_txt,
         temperature: Math.round(item.main.temp - 273.15),
-        lowestTemperature: Math.round(item.main.temp_min),
-        highestTemperature: Math.round(item.main.temp_max),
+        lowestTemperature: Math.round(item.main.temp_min - 273.15),
+        highestTemperature: Math.round(item.main.temp_max - 273.15),
         description: item.weather[0].description,
         icon: `https://openweathermap.org/img/w/${item.weather[0].icon}.png`,
         city: forecastData.city.name,
@@ -34,5 +35,5 @@ export async function getWeatherData(city: string): Promise<WeatherData[]> {
     }
   );
 
-  return weatherData;
+  return aggregateWeatherData(weatherData);
 }

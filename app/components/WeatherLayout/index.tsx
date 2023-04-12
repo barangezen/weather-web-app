@@ -1,19 +1,20 @@
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import type { WeatherData, WeatherDataAPI } from "~/types/WeatherData";
-import { aggregateWeatherData } from "~/utils/helpers/aggregateWeatherData";
+import { useNavigate } from "@remix-run/react";
+import { useState } from "react";
+import type { WeatherData } from "~/types/WeatherData";
 import { formatDate } from "~/utils/helpers/dateFormatter";
 import { getCurrentTimeFormatted } from "~/utils/helpers/getCurrentTimeFormatted";
 import { WeatherInfoDetail } from "../WeatherInfoDetail";
 import { LineChart } from "../LineChart";
 import { ForecastList } from "../ForecastList";
+import type { ChartOptions } from "chart.js";
 
-export const WeatherLayout = () => {
-  const { config } = useLoaderData();
-  const [location, setLocation] = useState<{ lat: number; lon: number }>();
+interface IWeatherLayout {
+  weatherData: WeatherData[];
+}
+
+export const WeatherLayout: React.FC<IWeatherLayout> = ({ weatherData }) => {
   const [city, setCity] = useState("");
   const navigate = useNavigate();
-  const [weatherData, setWeatherData] = useState<WeatherData[]>();
   const currentTime = getCurrentTimeFormatted();
 
   const temperatureData = weatherData
@@ -29,7 +30,7 @@ export const WeatherLayout = () => {
 
   const labels = weatherData?.map((item) => formatDate(item.date));
 
-  const options = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: {
@@ -40,6 +41,15 @@ export const WeatherLayout = () => {
         text: "Hourly forecast ",
       },
     },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grace: "5%",
+        ticks: {
+          callback: (value) => `${value}°C`, // Add °C to the tick labels
+        },
+      },
+    },
   };
 
   const data = {
@@ -48,80 +58,34 @@ export const WeatherLayout = () => {
       {
         label: "Tempature",
         data: temperatureData,
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: "rgba(138, 160, 214, 0.8)",
+        backgroundColor: "rgba(138, 160, 214, 0.8)",
       },
       {
         label: "Lowest Tempature",
         data: lowestTemperatureData,
-        borderColor: "rgb(100, 65, 80)",
-        backgroundColor: "rgba(149, 35, 132, 0.5)",
+        borderColor: "rgba(31, 65, 143, 0.8)",
+        backgroundColor: "rgba(31, 65, 143, 0.8)",
       },
       {
         label: "Highest Tempature",
         data: highestTemperatureData,
-        borderColor: "rgb(50, 175, 48)",
-        backgroundColor: "rgba(149, 35, 132, 0.5)",
+        borderColor: "rgba(0, 77, 255, 0.8)",
+        backgroundColor: "rgba(0, 77, 255, 0.8)",
       },
     ],
   };
 
   const handleSearch = () => {
-    // Redirect to the desired page with the city as a parameter
-    navigate(`/${city}`);
+    navigate(`/${city.toLocaleLowerCase()}`);
   };
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }, []);
-
-  useEffect(() => {
-    async function fetchWeatherData() {
-      if (location && config.apiKey) {
-        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&appid=${config?.apiKey}&units=metric`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const weatherData: WeatherData[] = data.list.map(
-          (item: WeatherDataAPI) => {
-            return {
-              date: item.dt_txt,
-              temperature: Math.round(item.main.temp),
-              description: item.weather[0].description,
-              icon: `https://openweathermap.org/img/w/${item.weather[0].icon}.png`,
-              city: data.city.name,
-              lowestTemperature: item.main.temp_min,
-              highestTemperature: item.main.temp_max,
-              humidity: item.main.humidity,
-              feelsLike: item.main.feels_like,
-              visibility: item.visibility,
-              windSpeed: item.wind.speed,
-              country: data.city.country,
-            };
-          }
-        );
-        const aggregatedData = aggregateWeatherData(weatherData);
-        setWeatherData(aggregatedData);
-      }
-    }
-    fetchWeatherData();
-  }, [location, config]);
 
   return (
     <>
       {weatherData ? (
         <>
           <div className="flex flex-col">
-            <div className="relative w-96 self-center mb-12">
+            <div className="relative w-96 self-center mb-6">
               <input
                 className="w-full h-12 pl-6 pr-12 rounded-full border"
                 placeholder="Search City"
