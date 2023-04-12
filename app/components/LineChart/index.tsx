@@ -29,9 +29,9 @@ interface ILineChart {
 
 export const LineChart: React.FC<ILineChart> = ({ title, data, options }) => {
   return (
-    <>
+    <div>
       <span className="text-lg font-bold">{title}</span>
       <Line data={data} options={options} />
-    </>
+    </div>
   );
 };
